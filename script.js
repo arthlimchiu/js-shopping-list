@@ -1,5 +1,6 @@
 const itemForm = document.querySelector("#item-form");
 const itemInput = document.querySelector("#item-input");
+const filter = document.querySelector('#filter');
 const itemList = document.querySelector("#item-list");
 const clearBtn = document.querySelector('#clear');
 
@@ -23,6 +24,7 @@ function addItemToList() {
     itemList.appendChild(item);
 
     clearInput();
+    checkForItems();
 }
 
 function createItem() {
@@ -72,7 +74,10 @@ function clearInput() {
 
 function onDelete(e) {
     if (e.target.parentElement.classList.contains('remove-item')) {
-        e.target.parentElement.parentElement.remove();
+        if (confirm('Are you sure?')) {
+            e.target.parentElement.parentElement.remove();
+            checkForItems();
+        }
     }
 }
 
@@ -80,9 +85,42 @@ function onClearAll(e) {
     while(itemList.firstElementChild) {
         itemList.firstElementChild.remove();
     }
+    checkForItems();
+}
+
+function onFilter(e) {
+    const text = e.target.value.toLowerCase();
+    const items = getItems();
+
+    items.forEach((item) => {
+        if (item.textContent.toLowerCase().includes(text)) {
+            item.style.display = 'flex';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function checkForItems() {
+    const items = getItems();
+
+    if (items.length  === 0) {
+        clearBtn.style.display = 'none';
+        filter.style.display = 'none';
+    } else {
+        clearBtn.style.display = 'block';
+        filter.style.display = 'block';
+    }
+}
+
+function getItems() {
+    return itemList.querySelectorAll('li');
 }
 
 // Event listeners
 itemForm.addEventListener('submit', onSubmit);
+filter.addEventListener('input', onFilter);
 itemList.addEventListener('click', onDelete);
 clearBtn.addEventListener('click', onClearAll);
+
+checkForItems();
