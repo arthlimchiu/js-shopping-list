@@ -1,6 +1,7 @@
 const itemForm = document.querySelector("#item-form");
 const itemInput = document.querySelector("#item-input");
 const itemList = document.querySelector("#item-list");
+const clearBtn = document.querySelector('#clear');
 
 function onSubmit(e) {
     e.preventDefault();
@@ -69,5 +70,19 @@ function clearInput() {
     itemInput.value = '';
 }
 
+function onDelete(e) {
+    if (e.target.parentElement.classList.contains('remove-item')) {
+        e.target.parentElement.parentElement.remove();
+    }
+}
+
+function onClearAll(e) {
+    while(itemList.firstElementChild) {
+        itemList.firstElementChild.remove();
+    }
+}
+
 // Event listeners
 itemForm.addEventListener('submit', onSubmit);
+itemList.addEventListener('click', onDelete);
+clearBtn.addEventListener('click', onClearAll);
